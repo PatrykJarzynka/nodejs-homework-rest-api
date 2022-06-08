@@ -1,5 +1,6 @@
 const User = require("../service/schemas/User");
 const jwt = require("jsonwebtoken");
+var gravatar = require("gravatar");
 
 const signUser = async ({ res, value }) => {
   const existingUser = await User.findOne({
@@ -12,6 +13,7 @@ const signUser = async ({ res, value }) => {
   const newUser = new User({
     email: value.email,
     subscription: value.subscription,
+    avatarURL: gravatar.url(value.email),
   });
 
   await newUser.setPassword(value.password);
@@ -31,6 +33,7 @@ const loginUser = async ({ value, res }) => {
     id: user._id,
     email: user.email,
     subscription: user.subscription,
+    avatarURL: user.avatarURL,
   };
 
   const token = jwt.sign(payload, process.env.SECRET, { expiresIn: "12h" });
@@ -39,6 +42,7 @@ const loginUser = async ({ value, res }) => {
     id: user._id,
     email: user.email,
     subscription: user.subscription,
+    avatarURL: user.avatarURL,
     token: token,
   };
 
@@ -55,7 +59,12 @@ const loginUser = async ({ value, res }) => {
   );
 
   return {
-    user: { email: user.email, subscription: user.subscription, token: token },
+    user: {
+      email: user.email,
+      subscription: user.subscription,
+      avatarURL: user.avatarURL,
+      token: token,
+    },
   };
 };
 
