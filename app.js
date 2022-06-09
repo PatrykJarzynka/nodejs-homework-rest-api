@@ -12,7 +12,6 @@ const contactsRouter = require("./routes/api/contacts");
 const authRouter = require("./routes/api/auth");
 const listRouter = require("./routes/api/current");
 const logoutRouter = require("./routes/api/logout");
-const { findOneAndUpdate } = require("./service/schemas/contacts");
 const User = require("./service/schemas/User");
 
 const app = express();
@@ -70,7 +69,7 @@ app.patch(
           image.resize(250, 250).write(temporaryName);
         })
         .catch(async (err) => {
-          await fs.unlink(temporaryName)
+          await fs.unlink(temporaryName);
           return res.status(400).json({ message: "this is not a photo" });
         });
 
